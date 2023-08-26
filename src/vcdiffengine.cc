@@ -177,7 +177,7 @@ void VCDiffEngine::EncodeInternal(const char* target_data,
             hash_value,
             candidate_pos,
             next_encode,
-            (target_end - next_encode),
+            target_end - next_encode,
             target_hash,
             coder);
     if (bytes_encoded > 0) {
@@ -191,8 +191,7 @@ void VCDiffEngine::EncodeInternal(const char* target_data,
       hash_value = hasher.Hash(candidate_pos);
       if (look_for_target_matches) {
         // Update the target hash for the ADDed and COPYed data
-        target_hash->AddAllBlocksThroughIndex(
-            static_cast<int>(next_encode - target_data));
+        target_hash->AddAllBlocksThroughIndex(next_encode - target_data);
       }
     } else {
       // No match, or match is too small to be worth a COPY instruction.
@@ -202,7 +201,7 @@ void VCDiffEngine::EncodeInternal(const char* target_data,
       }
       if (look_for_target_matches) {
         target_hash->AddOneIndexHash(
-            static_cast<int>(candidate_pos - target_data),
+            candidate_pos - target_data,
             hash_value);
       }
       hash_value = hasher.UpdateHash(hash_value,

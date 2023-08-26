@@ -197,18 +197,18 @@ void BlockHash::AddBlock(uint32_t hash_value) {
 }
 
 void BlockHash::AddAllBlocks() {
-  AddAllBlocksThroughIndex(static_cast<int>(source_size_));
+  AddAllBlocksThroughIndex(source_size_);
 }
 
-void BlockHash::AddAllBlocksThroughIndex(int end_index) {
-  if (end_index > static_cast<int>(source_size_)) {
+void BlockHash::AddAllBlocksThroughIndex(size_t end_index) {
+  if (end_index > source_size_) {
     VCD_DFATAL << "BlockHash::AddAllBlocksThroughIndex() called"
                   " with index " << end_index
                << " higher than end index  " << source_size_ << VCD_ENDL;
     return;
   }
-  const int last_index_added = last_block_added_ * kBlockSize;
-  if (end_index <= last_index_added) {
+  const ptrdiff_t last_index_added = last_block_added_ * kBlockSize;
+  if (static_cast<ptrdiff_t>(end_index) <= last_index_added) {
     VCD_DFATAL << "BlockHash::AddAllBlocksThroughIndex() called"
                   " with index " << end_index
                << " <= last index added ( " << last_index_added
@@ -221,12 +221,12 @@ void BlockHash::AddAllBlocksThroughIndex(int end_index) {
     // See: https://github.com/google/open-vcdiff/issues/40
     return;
   }
-  int end_limit = end_index;
+  size_t end_limit = end_index;
   // Don't allow reading any indices at or past source_size_.
   // The Hash function extends (kBlockSize - 1) bytes past the index,
   // so leave a margin of that size.
-  int last_legal_hash_index = static_cast<int>(source_size() - kBlockSize);
-  if (end_limit > last_legal_hash_index) {
+  ptrdiff_t last_legal_hash_index = source_size() - kBlockSize;
+  if (static_cast<ptrdiff_t>(end_limit) > last_legal_hash_index) {
     end_limit = last_legal_hash_index + 1;
   }
   const char* block_ptr = source_data() + NextIndexToAdd();
@@ -404,12 +404,11 @@ void BlockHash::FindBestMatch(uint32_t hash_value,
                                                    target_candidate_start);
        (block_number >= 0) && !TooManyMatches(&match_counter);
        block_number = NextMatchingBlock(block_number, target_candidate_start)) {
-    int source_match_offset = block_number * kBlockSize;
-    const int source_match_end = source_match_offset + kBlockSize;
+    ptrdiff_t source_match_offset = block_number * kBlockSize;
+    const size_t source_match_end = source_match_offset + kBlockSize;
 
-    int target_match_offset =
-        static_cast<int>(target_candidate_start - target_start);
-    const int target_match_end = target_match_offset + kBlockSize;
+    ptrdiff_t target_match_offset = target_candidate_start - target_start;
+    const ptrdiff_t target_match_end = target_match_offset + kBlockSize;
 
     size_t match_size = kBlockSize;
     {

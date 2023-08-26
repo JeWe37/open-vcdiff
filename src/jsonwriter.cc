@@ -82,7 +82,7 @@ void JSONCodeTableWriter::Add(const char* data, size_t size) {
   opcode_added_ = true;
 }
 
-void JSONCodeTableWriter::Copy(int32_t offset, size_t size) {
+void JSONCodeTableWriter::Copy(int64_t offset, size_t size) {
   // Add leading comma if this is not the first opcode.
   if (opcode_added_) {
     output_.push_back(',');

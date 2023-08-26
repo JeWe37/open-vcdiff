@@ -167,7 +167,7 @@ const unsigned char VCD_ADDRCOMP = 0x04;
 // A COPY address has 32 bits, which places a limit
 // of 2GB on the maximum combined size of the dictionary plus
 // the target window (= the chunk of data to be encoded.)
-typedef int32_t VCDAddress;
+typedef int64_t VCDAddress;
 
 // The address modes used for COPY instructions, as defined in
 // section 5.3 of the RFC.

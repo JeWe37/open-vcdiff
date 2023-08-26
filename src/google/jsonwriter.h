@@ -49,7 +49,7 @@ class JSONCodeTableWriter : public CodeTableWriterInterface {
   virtual void Add(const char* data, size_t size);
 
   // Encode a COPY opcode with args "offset" (into dictionary) and "size" bytes.
-  virtual void Copy(int32_t offset, size_t size);
+  virtual void Copy(int64_t offset, size_t size);
 
   // Encode a RUN opcode for "size" copies of the value "byte".
   virtual void Run(size_t size, unsigned char byte);

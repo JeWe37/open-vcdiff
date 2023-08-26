@@ -240,7 +240,7 @@ void VCDiffCodeTableWriter::Add(const char* data, size_t size) {
   target_length_ += size;
 }
 
-void VCDiffCodeTableWriter::Copy(int32_t offset, size_t size) {
+void VCDiffCodeTableWriter::Copy(VCDAddress offset, size_t size) {
   if (!instruction_map_) {
     VCD_DFATAL << "VCDiffCodeTableWriter::Copy() called without calling Init()"
                << VCD_ENDL;
@@ -251,7 +251,7 @@ void VCDiffCodeTableWriter::Copy(int32_t offset, size_t size) {
   // then the string instructions_and_sizes_ may be the same as
   // addresses_for_copy_.  The address should therefore be encoded
   // *after* the instruction and its size.
-  int32_t encoded_addr = 0;
+  VCDAddress encoded_addr = 0;
   const unsigned char mode = address_cache_.EncodeAddress(
       offset,
       static_cast<VCDAddress>(dictionary_size_ + target_length_),
@@ -272,17 +272,17 @@ void VCDiffCodeTableWriter::Run(size_t size, unsigned char byte) {
 }
 
 size_t VCDiffCodeTableWriter::CalculateLengthOfSizeAsVarint(size_t size) {
-  return VarintBE<int32_t>::Length(static_cast<int32_t>(size));
+  return VarintBE<int64_t>::Length(static_cast<int64_t>(size));
 }
 
 void VCDiffCodeTableWriter::AppendSizeToString(size_t size, string* out) {
-  VarintBE<int32_t>::AppendToString(static_cast<int32_t>(size), out);
+  VarintBE<int64_t>::AppendToString(static_cast<int64_t>(size), out);
 }
 
 void VCDiffCodeTableWriter::AppendSizeToOutputString(
     size_t size,
     OutputStringInterface* out) {
-  VarintBE<int32_t>::AppendToOutputString(static_cast<int32_t>(size), out);
+  VarintBE<int64_t>::AppendToOutputString(size, out);
 }
 
 // This calculation must match the items added between "Start of Delta Encoding"

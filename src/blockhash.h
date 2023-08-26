@@ -70,7 +70,7 @@ class BlockHash {
   //
   // If you change kBlockSize to a smaller value, please increase
   // kMaxMatchesToCheck accordingly.
-  static const int kBlockSize = 128;
+  static const size_t kBlockSize = 128;
 
   // This class is used to store the best match found by FindBestMatch()
   // and return it to the caller.
@@ -79,8 +79,8 @@ class BlockHash {
     Match() : size_(0), source_offset_(-1), target_offset_(-1) { }
 
     void ReplaceIfBetterMatch(size_t candidate_size,
-                              int candidate_source_offset,
-                              int candidate_target_offset) {
+                              ptrdiff_t candidate_source_offset,
+                              ptrdiff_t candidate_target_offset) {
       if (candidate_size > size_) {
         size_ = candidate_size;
         source_offset_ = candidate_source_offset;
@@ -89,8 +89,8 @@ class BlockHash {
     }
 
     size_t size() const { return size_; }
-    int source_offset() const { return source_offset_; }
-    int target_offset() const { return target_offset_; }
+    ptrdiff_t source_offset() const { return source_offset_; }
+    ptrdiff_t target_offset() const { return target_offset_; }
 
    private:
      // The size of the best (longest) match passed to ReplaceIfBetterMatch().
@@ -98,11 +98,11 @@ class BlockHash {
 
     // The source offset of the match, including the starting_offset_
     // of the BlockHash for which the match was found.
-    int source_offset_;
+    ptrdiff_t source_offset_;
 
     // The target offset of the match.  An offset of 0 corresponds to the
     // data at target_start, which is an argument of FindBestMatch().
-    int target_offset_;
+    ptrdiff_t target_offset_;
 
     // Making these private avoids implicit copy constructor
     // & assignment operator
@@ -176,7 +176,7 @@ class BlockHash {
   // of whether the block is aligned evenly on a block boundary.  The
   // BlockHash will only store hash entries for the evenly-aligned blocks.
   //
-  void AddOneIndexHash(int index, uint32_t hash_value) {
+  void AddOneIndexHash(size_t index, uint32_t hash_value) {
     if (index == NextIndexToAdd()) {
       AddBlock(hash_value);
     }
@@ -204,7 +204,7 @@ class BlockHash {
   // VCDiffEngine::Encode (in vcdiffengine.cc) uses this function to
   // add a whole range of data to a target hash when a COPY instruction
   // is generated.
-  void AddAllBlocksThroughIndex(int end_index);
+  void AddAllBlocksThroughIndex(size_t end_index);
 
   // FindBestMatch takes a position within the unencoded target data
   // (target_candidate_start) and the hash value of the kBlockSize bytes
@@ -346,8 +346,8 @@ class BlockHash {
 
   // The index within source_data_ of the next block
   // for which AddBlock() should be called.
-  int NextIndexToAdd() const {
-    return (last_block_added_ + 1) * kBlockSize;
+  size_t NextIndexToAdd() const {
+    return static_cast<size_t>(last_block_added_ + 1) * kBlockSize;
   }
 
   static inline bool TooManyMatches(int* match_counter);
@@ -489,7 +489,7 @@ class BlockHash {
   // For a hash of source (dictionary) data, starting_offset_ will be zero;
   // for a hash of previously encoded target data, starting_offset_ will be
   // equal to the dictionary size.
-  const int starting_offset_;
+  const size_t starting_offset_;
 
   // The last index added by AddBlock().  This determines the block number
   // for successive calls to AddBlock(), and is also
