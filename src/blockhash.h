@@ -70,7 +70,7 @@ class BlockHash {
   //
   // If you change kBlockSize to a smaller value, please increase
   // kMaxMatchesToCheck accordingly.
-  static const int kBlockSize = 16;
+  static const int kBlockSize = 128;
 
   // This class is used to store the best match found by FindBestMatch()
   // and return it to the caller.

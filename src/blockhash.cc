@@ -111,7 +111,7 @@ size_t BlockHash::CalcTableSize(const size_t dictionary_size) {
   // the empty entries in the hash table will reduce the
   // probability of a hash collision to (sizeof(int) / kblockSize),
   // and so save time comparing false matches.
-  const size_t min_size = (dictionary_size / sizeof(int)) + 1;  // NOLINT
+  const size_t min_size = (dictionary_size / kBlockSize * sizeof(int)) + 1;  // NOLINT
   size_t table_size = 1;
   // Find the smallest power of 2 that is >= min_size, and assign
   // that value to table_size.
