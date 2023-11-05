@@ -258,7 +258,7 @@ void VCDiffCodeTableWriter::Copy(VCDAddress offset, size_t size) {
       &encoded_addr);
   EncodeInstruction(VCD_COPY, size, mode);
   if (address_cache_.WriteAddressAsVarintForMode(mode)) {
-    VarintBE<int32_t>::AppendToString(encoded_addr, addresses_for_copy_);
+    VarintBE<int64_t>::AppendToString(encoded_addr, addresses_for_copy_);
   } else {
     addresses_for_copy_->push_back(static_cast<unsigned char>(encoded_addr));
   }
